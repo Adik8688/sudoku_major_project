@@ -33,3 +33,40 @@ class SudokuSolver:
             grid.append(row)
 
         return grid
+    
+    def is_solvable(self) -> bool:
+        grid_of_possibilities = self.get_grid_of_possibilities()
+        for row in grid_of_possibilities:
+            for i in row:
+                if not i:
+                    return False
+        return True
+    
+    def get_first_empty(self) -> tuple:
+        for y in range(9):
+            for x in range(9):
+                if self.sudoku.get_cell(x, y) == 0:
+                    return (x, y)
+        return (-1, -1)
+    
+    def solve(self) -> Sudoku:
+        if self.sudoku.is_solved():
+            return self.sudoku
+
+        if not self.is_solvable():
+            return None
+        
+        x, y = self.get_first_empty()
+        values = self.get_list_of_possibilities_for_cell(x, y)
+
+        for value in values:
+            self.sudoku.set_cell(x, y, value)
+            result = self.solve()
+            if result is not None:
+                return self.sudoku
+        
+        self.sudoku.set_cell(x, y, 0)
+
+        return None
+    
+  

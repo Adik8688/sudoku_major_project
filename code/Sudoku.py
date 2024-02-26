@@ -83,5 +83,9 @@ class Sudoku:
         return self.check_rows() and self.check_cols() and self.check_squares()
     
     def __str__(self) -> str:
+        output = ""
         for row in self.grid:
-            print(" ".join([(str(i) if i != 0 else "-") for i in row]))
+            output += " ".join([(str(i) if i != 0 else "-") for i in row])
+            output += "\n"
+        
+        return output
