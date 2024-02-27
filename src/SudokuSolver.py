@@ -1,4 +1,4 @@
-from code.Sudoku import Sudoku
+from .Sudoku import Sudoku
 
 class SudokuSolver:
     def __init__(self, sudoku: Sudoku) -> None:

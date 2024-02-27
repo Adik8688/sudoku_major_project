@@ -1,9 +1,5 @@
-import sys
-
-sys.path.insert(0, "..")
-
-from code.SudokuSolver import SudokuSolver
-from code.Sudoku import Sudoku
+from src.SudokuSolver import SudokuSolver
+from src.Sudoku import Sudoku
 import pytest
 
 @pytest.fixture

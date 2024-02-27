@@ -1,5 +1,5 @@
-from code.Sudoku import Sudoku
 import pytest
+from src.Sudoku import Sudoku
 
 @pytest.fixture
 def example_grid():
