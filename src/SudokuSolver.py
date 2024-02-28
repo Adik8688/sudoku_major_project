@@ -17,7 +17,7 @@ class SudokuSolver:
         sqy = y // 3
         for i in range(3):
             for j in range(3):
-                invalid_values.append(self.sudoku.get_cell(i + sqx, j + sqy))
+                invalid_values.append(self.sudoku.get_cell(i + sqx * 3, j + sqy * 3))
         
         valid_values = [i for i in range(1, 10) if i not in invalid_values]
 
@@ -49,7 +49,7 @@ class SudokuSolver:
                     return (x, y)
         return (-1, -1)
     
-    def solve(self) -> Sudoku:
+    def solve(self, n = 0) -> Sudoku:
         if self.sudoku.is_solved():
             return self.sudoku
 
@@ -61,7 +61,8 @@ class SudokuSolver:
 
         for value in values:
             self.sudoku.set_cell(x, y, value)
-            result = self.solve()
+            print(x, y, value, n)
+            result = self.solve(n + 1)
             if result is not None:
                 return self.sudoku
         
