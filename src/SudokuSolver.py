@@ -1,10 +1,14 @@
 from .Sudoku import Sudoku
+from collections import defaultdict
+from copy import deepcopy
 
 class SudokuSolver:
     def __init__(self, sudoku: Sudoku) -> None:
         self.sudoku = sudoku
+        self.grid_of_candidates = []
+        self.create_grid_of_candidates()
 
-    def get_list_of_possibilities_for_cell(self, x: int, y: int) -> list:
+    def get_list_of_candidates_for_cell(self, x: int, y: int) -> list:
         if self.sudoku.get_cell(x, y) != 0:
             return [-1]
         
@@ -24,19 +28,31 @@ class SudokuSolver:
         return valid_values
 
 
-    def get_grid_of_possibilities(self) -> list:
-        grid = []
+    def create_grid_of_candidates(self) -> list:
         for y in range(9):
             row = []
             for x in range(9):
-                row.append(self.get_list_of_possibilities_for_cell(x, y))
-            grid.append(row)
+                row.append(self.get_list_of_candidates_for_cell(x, y))
+            self.grid_of_candidates.append(row)
 
-        return grid
+    def update_grid_of_candidates(self, x: int, y: int) -> list:
+        # cols and rows
+        for i in range(9):
+            self.grid_of_candidates[y][i] = self.get_list_of_candidates_for_cell(i, y)
+            self.grid_of_candidates[i][x] = self.get_list_of_candidates_for_cell(x, i)
+
+        # squares
+        sqx = x // 3
+        sqy = y // 3
+        for i in range(3):
+            for j in range(3):
+                x_coord = sqx * 3 + i
+                y_coord = sqy * 3 + j
+                self.grid_of_candidates[y_coord][x_coord] = self.get_list_of_candidates_for_cell(x_coord, y_coord)
+        
     
     def is_solvable(self) -> bool:
-        grid_of_possibilities = self.get_grid_of_possibilities()
-        for row in grid_of_possibilities:
+        for row in self.grid_of_candidates:
             for i in row:
                 if not i:
                     return False
@@ -46,8 +62,83 @@ class SudokuSolver:
         for y in range(9):
             for x in range(9):
                 if self.sudoku.get_cell(x, y) == 0:
-                    return (x, y)
-        return (-1, -1)
+                    values = self.get_list_of_candidates_for_cell(x, y)
+                    return (x, y, values)
+        return (-1, -1, [])
+    
+    def get_lowest_candidates_number(self) -> tuple:
+        x, y, values = -1, -1, list(range(10))
+        for i in range(9):
+            for j in range(9):
+                if len(self.grid_of_candidates[i][j]) < len(values) and self.grid_of_candidates[i][j] != [-1]:
+                    x, y, values = j, i, self.grid_of_candidates[i][j]
+        
+        return x, y, values
+    
+    def get_highest_candidate_number(self) -> tuple:
+        x, y, values = -1, -1, []
+        for i in range(9):
+            for j in range(9):
+                if len(self.grid_of_candidates[i][j]) > len(values) and self.grid_of_candidates[i][j] != [-1]:
+                    x, y, values = j, i, self.grid_of_candidates[i][j]
+        
+        return x, y, values
+    
+    @staticmethod
+    def get_indexes_per_candidate(list_of_candidates: list) -> dict:
+        distribution = defaultdict(list)
+
+        for i, candidates in enumerate(list_of_candidates):
+            if candidates != [-1]:
+                for c in candidates:
+                    distribution[c].append(i)
+        
+        return dict(sorted(distribution.items()))
+    
+    def filter_out_hidden_singles(self, coords: list):
+        candidates = [self.grid_of_candidates[y][x] for x, y in coords]
+        distribution = self.get_indexes_per_candidate(candidates)
+
+        for k, v in distribution.items():
+            if len(v) == 1:
+                x, y = coords[v[0]]
+                self.grid_of_candidates[y][x] = [k]
+    
+    @staticmethod
+    def get_coords_list(index: int, type: str) -> list:
+        if not 0 <= index < 9:
+            return []
+
+        if type == "col":
+            x_coords = [index] * 9
+            y_coords = list(range(9))
+            return list(zip(x_coords, y_coords))
+        
+        if type == "row":
+            x_coords = list(range(9))
+            y_coords = [index] * 9
+            return list(zip(x_coords, y_coords))
+        
+        sqx = index % 3
+        sqy = index // 3
+        coords = []
+        for y in range(3):
+            for x in range(3):
+                coords.append((x + sqx * 3, y + sqy * 3))
+
+        return coords
+    
+    def apply_advance_rules(self) -> None:
+        while True:
+            old_grid = deepcopy(self.grid_of_candidates)
+            for index in range(9):
+                for type in ["col", "row", "sq"]:
+                    coords = self.get_coords_list(index, type)
+                    self.filter_out_hidden_singles(coords)
+            
+            if self.grid_of_candidates == old_grid:
+                break
+
     
     def solve(self, n = 0) -> Sudoku:
         if self.sudoku.is_solved():
@@ -56,17 +147,20 @@ class SudokuSolver:
         if not self.is_solvable():
             return None
         
-        x, y = self.get_first_empty()
-        values = self.get_list_of_possibilities_for_cell(x, y)
+        self.apply_advance_rules()
+        x, y, values = self.get_lowest_candidates_number()
 
         for value in values:
+            print(f"({x}, {y}) n: {n}, val: {value}")
             self.sudoku.set_cell(x, y, value)
-            print(x, y, value, n)
+            self.update_grid_of_candidates(x, y)
             result = self.solve(n + 1)
             if result is not None:
                 return self.sudoku
         
+        print(f"Return None on n: {n}")
         self.sudoku.set_cell(x, y, 0)
+        self.update_grid_of_candidates(x, y)
 
         return None
     

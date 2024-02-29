@@ -61,13 +61,13 @@ def hard_sudoku():
 def test_possible_values_for_cell(example_sudoku_1):
     solver = SudokuSolver(example_sudoku_1)
 
-    result = solver.get_list_of_possibilities_for_cell(0, 0)
+    result = solver.get_list_of_candidates_for_cell(0, 0)
     assert result == [-1]
 
-    result = solver.get_list_of_possibilities_for_cell(0, 1)
+    result = solver.get_list_of_candidates_for_cell(0, 1)
     assert result == [6, 8, 9]
 
-    result = solver.get_list_of_possibilities_for_cell(8, 0)
+    result = solver.get_list_of_candidates_for_cell(8, 0)
     assert result == [2, 8, 9]
 
 def test_is_solvable_1(unsolvable_sudoku):
@@ -100,3 +100,4 @@ def test_solve_2(hard_sudoku):
     result = solver.solve()
 
     assert result is not None
+
