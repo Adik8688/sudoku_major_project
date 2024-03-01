@@ -1,4 +1,5 @@
 import copy
+import numpy as np
 
 
 class Sudoku:
@@ -6,23 +7,14 @@ class Sudoku:
         if isinstance(grid, str):
             grid = self.string_to_grid(grid)
 
-        if not self.valid_grid_size(grid):
-            exit(1)
-
-        self.initial_grid = copy.deepcopy(grid)
-        self.grid = grid
+        self.initial_grid = copy.deepcopy(np.array(grid))
+        self.grid = np.array(grid)
+        self.grid_validation()    
 
 
-    @staticmethod
-    def valid_grid_size(grid: list) -> bool:
-        if len(grid) != 9:
-            return False
-        
-        for row in grid:
-            if len(row) != 9:
-                return False
-        
-        return True
+    def grid_validation(self) -> None:
+       if self.grid.shape != (9,9):
+           exit(1)
 
 
     @staticmethod
