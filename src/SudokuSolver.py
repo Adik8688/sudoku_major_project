@@ -1,6 +1,7 @@
 from .Sudoku import Sudoku
 from collections import defaultdict
 from copy import deepcopy
+import numpy as np
 
 class SudokuSolver:
     def __init__(self, sudoku: Sudoku) -> None:
@@ -13,15 +14,10 @@ class SudokuSolver:
             return [-1]
         
         invalid_values = []
-        for i in range(9):
-            invalid_values.append(self.sudoku.get_cell(x, i))
-            invalid_values.append(self.sudoku.get_cell(i, y))
-        
-        sqx = x // 3
-        sqy = y // 3
-        for i in range(3):
-            for j in range(3):
-                invalid_values.append(self.sudoku.get_cell(i + sqx * 3, j + sqy * 3))
+        invalid_values += self.sudoku.get_row(y).tolist()
+        invalid_values += self.sudoku.get_col(x).tolist()
+        sq_index = x // 3 + 3 * (y // 3)
+        invalid_values += self.sudoku.get_square(sq_index).flatten().tolist()
         
         valid_values = [i for i in range(1, 10) if i not in invalid_values]
 

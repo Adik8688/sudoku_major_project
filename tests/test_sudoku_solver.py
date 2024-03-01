@@ -70,7 +70,14 @@ def test_possible_values_for_cell(example_sudoku_1):
     result = solver.get_list_of_candidates_for_cell(8, 0)
     assert result == [2, 8, 9]
 
+def test_possible_values_for_cell_2(unsolvable_sudoku):
+    solver = SudokuSolver(unsolvable_sudoku)
+
+    result = solver.get_list_of_candidates_for_cell(0, 1)
+    assert result == []
+    
 def test_is_solvable_1(unsolvable_sudoku):
+
     solver = SudokuSolver(unsolvable_sudoku)
     assert not solver.is_solvable()
 

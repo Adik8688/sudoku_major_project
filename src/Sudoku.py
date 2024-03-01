@@ -8,7 +8,7 @@ class Sudoku:
             grid = self.string_to_grid(grid)
 
         self.initial_grid = copy.deepcopy(np.array(grid))
-        self.grid = np.array(grid)
+        self.grid = np.array(grid, dtype=int)
         self.grid_validation()
 
     def grid_validation(self) -> None:
@@ -33,40 +33,30 @@ class Sudoku:
 
     def get_cell(self, x: int, y: int) -> int:
         if self.valid_coords(x, y):
-            return self.grid[y][x]
+            return self.grid[y, x]
         return -1
 
     def set_cell(self, x: int, y: int, new_value: int) -> None:
         if (
             self.valid_coords(x, y)
             and self.valid_value(new_value)
-            and self.initial_grid[y][x] == 0
+            and self.initial_grid[y, x] == 0
         ):
-            self.grid[y][x] = new_value
+            self.grid[y, x] = new_value
 
     def check_rows(self) -> bool:
-        for row in self.grid:
-            if sorted(row) != list(range(1, 10)):
-                return False
-        return True
+        row_correct = np.all(np.sort(self.grid, axis=1) == np.arange(1, 10), axis=1)
+        return np.all(row_correct)
 
     def check_cols(self) -> bool:
-        for col in range(9):
-            col_values = [self.grid[col][row] for row in range(9)]
-            if sorted(col_values) != list(range(1, 10)):
-                return False
-
-        return True
+        col_correct = np.all(np.sort(self.grid, axis = 0) == np.arange(1, 10)[:, None], axis=0)
+        return np.all(col_correct)
 
     def check_squares(self) -> bool:
-        for i in range(0, 9, 3):
-            for j in range(0, 9, 3):
-                square_values = []
-                for x in range(3):
-                    for y in range(3):
-                        square_values.append(self.grid[j + y][i + x])
-                if sorted(square_values) != list(range(1, 10)):
-                    return False
+        for i in range(9):
+            square = self.get_square(i)
+            if not np.all(np.sort(square.flatten()) == np.arange(1, 10)):
+                return False
         return True
 
     def is_solved(self) -> bool:
