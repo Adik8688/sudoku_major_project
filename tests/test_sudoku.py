@@ -1,20 +1,23 @@
 import pytest
 from src.Sudoku import Sudoku
+import numpy as np
+
 
 @pytest.fixture
 def example_grid():
     grid = [
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9]
+        [5, 3, 0, 0, 7, 0, 0, 0, 0],
+        [6, 0, 0, 1, 9, 5, 0, 0, 0],
+        [0, 9, 8, 0, 0, 0, 0, 6, 0],
+        [8, 0, 0, 0, 6, 0, 0, 0, 3],
+        [4, 0, 0, 8, 0, 3, 0, 0, 1],
+        [7, 0, 0, 0, 2, 0, 0, 0, 6],
+        [0, 6, 0, 0, 0, 0, 2, 8, 0],
+        [0, 0, 0, 4, 1, 9, 0, 0, 5],
+        [0, 0, 0, 0, 8, 0, 0, 7, 9],
     ]
     return grid
+
 
 @pytest.fixture
 def example_string_grid():
@@ -28,22 +31,23 @@ def example_string_grid():
         060000280
         000419005
         000080079"""
-    
+
     return grid
+
 
 @pytest.fixture
 def solved_sudoku():
     grid = [
-    [5, 3, 4, 6, 7, 8, 9, 1, 2],
-    [6, 7, 2, 1, 9, 5, 3, 4, 8],
-    [1, 9, 8, 3, 4, 2, 5, 6, 7],
-    [8, 5, 9, 7, 6, 1, 4, 2, 3],
-    [4, 2, 6, 8, 5, 3, 7, 9, 1],
-    [7, 1, 3, 9, 2, 4, 8, 5, 6],
-    [9, 6, 1, 5, 3, 7, 2, 8, 4],
-    [2, 8, 7, 4, 1, 9, 6, 3, 5],
-    [3, 4, 5, 2, 8, 6, 1, 7, 9]
-    ]         
+        [5, 3, 4, 6, 7, 8, 9, 1, 2],
+        [6, 7, 2, 1, 9, 5, 3, 4, 8],
+        [1, 9, 8, 3, 4, 2, 5, 6, 7],
+        [8, 5, 9, 7, 6, 1, 4, 2, 3],
+        [4, 2, 6, 8, 5, 3, 7, 9, 1],
+        [7, 1, 3, 9, 2, 4, 8, 5, 6],
+        [9, 6, 1, 5, 3, 7, 2, 8, 4],
+        [2, 8, 7, 4, 1, 9, 6, 3, 5],
+        [3, 4, 5, 2, 8, 6, 1, 7, 9],
+    ]
     sudoku = Sudoku(grid)
     return sudoku
 
@@ -62,22 +66,25 @@ def example_sudoku_1():
     sudoku = Sudoku(grid)
     return sudoku
 
-def test_constuctor_list(example_grid): 
+
+def test_constuctor_list(example_grid):
     sudoku = Sudoku(example_grid)
-    assert sudoku.grid == example_grid
+    assert np.array_equal(sudoku.grid, example_grid)
 
 
-def test_constructor_string(example_grid, example_string_grid):  
+def test_constructor_string(example_grid, example_string_grid):
     sudoku = Sudoku(example_string_grid)
-    assert sudoku.grid == example_grid
+    assert np.array_equal(sudoku.grid, example_grid)
+
 
 @pytest.mark.xfail(reason="Program exits on invalid grid size")
 def test_invalid_size():
     str_grid = """
                 111
                 222"""
-    
+
     sudoku = Sudoku(str_grid)
+
 
 def test_getting_cell(example_sudoku_1):
     cell = example_sudoku_1.get_cell(0, 0)
@@ -92,6 +99,7 @@ def test_getting_cell(example_sudoku_1):
     cell = example_sudoku_1.get_cell(11, 1)
     assert cell == -1
 
+
 def test_setting_cell(example_sudoku_1):
     example_sudoku_1.set_cell(1, 0, 5)
     cell = example_sudoku_1.get_cell(1, 0)
@@ -105,5 +113,26 @@ def test_setting_cell(example_sudoku_1):
 def test_is_solved_1(solved_sudoku):
     assert solved_sudoku.is_solved()
 
+
 def test_is_solved_2(example_sudoku_1):
     assert not example_sudoku_1.is_solved()
+
+
+def test_get_column(example_sudoku_1):
+    column = [7, 0, 3, 5, 2, 0, 0, 0, 0]
+    result = example_sudoku_1.get_col(0)
+    assert np.array_equal(column, result)
+
+
+def test_get_row(example_sudoku_1):
+    row = [7, 0, 0, 0, 3, 6, 0, 4, 0]
+    result = example_sudoku_1.get_row(0)
+    assert np.array_equal(row, result)
+
+
+def test_get_square(example_sudoku_1):
+    square = [[0, 0, 0],
+              [6, 4, 0], 
+              [9, 7, 0]]
+    result = example_sudoku_1.get_square(4)
+    assert np.array_equal(square, result)

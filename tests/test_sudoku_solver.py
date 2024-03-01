@@ -86,7 +86,7 @@ def test_is_solvable_3(easy_sudoku):
 def test_get_first(example_sudoku_1):
     solver = SudokuSolver(example_sudoku_1)
     result = solver.get_first_empty()
-    assert result == (1, 0)
+    assert result == (1, 0, [1, 8, 9])
 
 def test_solve_1(easy_sudoku):
     solver = SudokuSolver(easy_sudoku)

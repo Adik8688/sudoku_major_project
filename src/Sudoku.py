@@ -9,13 +9,11 @@ class Sudoku:
 
         self.initial_grid = copy.deepcopy(np.array(grid))
         self.grid = np.array(grid)
-        self.grid_validation()    
-
+        self.grid_validation()
 
     def grid_validation(self) -> None:
-       if self.grid.shape != (9,9):
-           exit(1)
-
+        if self.grid.shape != (9, 9):
+            exit(1)
 
     @staticmethod
     def string_to_grid(grid: str) -> list:
@@ -73,11 +71,22 @@ class Sudoku:
 
     def is_solved(self) -> bool:
         return self.check_rows() and self.check_cols() and self.check_squares()
-    
+
+    def get_col(self, index: int) -> np.array:
+        return self.grid[:, index]
+
+    def get_row(self, index: int) -> np.array:
+        return self.grid[index, :]
+
+    def get_square(self, index: int) -> np.array:
+        x = (index % 3) * 3
+        y = (index // 3) * 3
+        return self.grid[y : y + 3, x : x + 3]
+
     def __str__(self) -> str:
         output = ""
         for row in self.grid:
             output += " ".join([(str(i) if i != 0 else "-") for i in row])
             output += "\n"
-        
+
         return output
