@@ -174,7 +174,7 @@ class SudokuSolver:
                 return self.sudoku
         
         print(f"Return None on n: {n}")
-        self.sudoku.set_cell(x, y, 0)
+        self.sudoku.clean_cell(x, y)
         self.update_grid_of_candidates(x, y)
 
         return None

@@ -47,6 +47,9 @@ class Sudoku:
         ):
             self.grid[y, x] = new_value
 
+    def clean_cell(self, x: int, y: int) -> None:
+        self.set_cell(x, y, 0)
+
     def check_rows(self) -> bool:
         row_correct = np.all(np.sort(self.grid, axis=1) == np.arange(1, 10), axis=1)
         return np.all(row_correct)
