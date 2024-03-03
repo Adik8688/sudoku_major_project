@@ -108,3 +108,50 @@ def test_solve_2(hard_sudoku):
 
     assert result is not None
 
+def test_get_coords(example_sudoku_1):
+    solver = SudokuSolver
+
+    index = 2
+    type = "col"
+    result = solver.get_coords_list(index, type)
+    expected = [(index, i) for i in range(9)]
+    assert result == expected
+
+    type = "row"
+    result = solver.get_coords_list(index, type)
+    expected = [(i, index) for i in range(9)]
+    assert result == expected
+
+    type = "sq"
+    result = solver.get_coords_list(index, type)
+    expected = [(6, 0), (7, 0), (8, 0),
+                (6, 1), (7, 1), (8, 1),
+                (6, 2), (7, 2), (8, 2)]
+    assert result == expected
+
+
+def test_indexes_per_candidate(example_sudoku_1):
+    solver = SudokuSolver(example_sudoku_1)
+    candidates = [[1, 2],
+                  [1, 2, 3],
+                  [5, 6],
+                  [7, 9],
+                  [1, 7],
+                  [2, 9],
+                  [8, 9],
+                  [-1],
+                  [1, 3, 6]]
+    
+    distribution = {
+        1: [0, 1, 4, 8],
+        2: [0, 1, 5],
+        3: [1, 8],
+        5: [2],
+        6: [2, 8],
+        7: [3, 4],
+        8: [6],
+        9: [3, 5, 6]
+    }
+    result = solver.get_indexes_per_candidate(candidates)
+    assert result == distribution
+

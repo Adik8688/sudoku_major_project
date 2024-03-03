@@ -136,8 +136,8 @@ class SudokuSolver:
                 break
 
     
-    def solve(self, n = 0) -> Sudoku:
-        if self.sudoku.is_solved():
+    def solve(self, n = 0, ignore_solution = None) -> Sudoku:
+        if self.sudoku.is_solved() and self.sudoku != ignore_solution:
             return self.sudoku
 
         if not self.is_solvable():
