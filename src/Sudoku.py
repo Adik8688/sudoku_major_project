@@ -15,6 +15,9 @@ class Sudoku:
         if self.grid.shape != (9, 9):
             exit(1)
 
+    def reset_sudoku(self) -> None:
+        self.grid = copy.deepcopy(self.initial_grid)
+
     @staticmethod
     def string_to_grid(grid: str) -> list:
         output = []

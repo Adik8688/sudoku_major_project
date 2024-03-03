@@ -108,8 +108,17 @@ def test_solve_2(hard_sudoku):
 
     assert result is not None
 
+def test_solve_3():
+    grid = [[0] * 9 for _ in range(9)]
+    sudoku = Sudoku(grid)
+    solver = SudokuSolver(sudoku)
+
+    result = solver.solve()
+    
+    assert result is None
+
 def test_get_coords(example_sudoku_1):
-    solver = SudokuSolver
+    solver = SudokuSolver(example_sudoku_1)
 
     index = 2
     type = "col"
