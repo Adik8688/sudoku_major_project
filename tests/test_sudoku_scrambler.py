@@ -35,7 +35,7 @@ def test_shuffle_rows(example_sudoku_1):
     first_row = deepcopy(example_sudoku_1.get_row(0))
 
     scrambler = SudokuScrambler(example_sudoku_1)
-    scrambler.shuffle_rows([1, 0, 2, 3, 4, 5, 6, 7, 8])
+    scrambler.permutate_rows([1, 0, 2, 3, 4, 5, 6, 7, 8])
 
     assert np.array_equal(first_row, example_sudoku_1.get_row(1))
 
@@ -44,7 +44,7 @@ def test_shuffle_cols(example_sudoku_1):
     first_col = deepcopy(example_sudoku_1.get_col(0))
 
     scrambler = SudokuScrambler(example_sudoku_1)
-    scrambler.shuffle_cols([8, 1, 2, 3, 4, 5, 6, 7, 0])
+    scrambler.permutate_cols([8, 1, 2, 3, 4, 5, 6, 7, 0])
     
     assert np.array_equal(first_col, example_sudoku_1.get_col(8))
 

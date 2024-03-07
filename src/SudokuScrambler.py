@@ -13,12 +13,33 @@ class SudokuScrambler:
         self.sudoku.grid[self.sudoku.grid == digit2] = digit1
         self.sudoku.grid[self.sudoku.grid == -1 ] = digit2 
         
-    def shuffle_rows(self, new_order: list) -> None:
+    def permutate_rows(self, new_order: list) -> None:
         self.sudoku.grid = self.sudoku.grid[new_order, :]
 
-    def shuffle_cols(self, new_order: list) -> None:
+    def permutate_cols(self, new_order: list) -> None:
         self.sudoku.grid = self.sudoku.grid[:, new_order]
 
+    @staticmethod
+    def shuffle_order_within_squares() -> list:
+        new_order = []
+        for i in range(0, 9, 3):
+            sub_order = np.arange(0, 3)
+            sub_order = np.random.permutation(sub_order)
+            sub_order += i
+            new_order += list(sub_order)
+
+        return new_order
+
+    @staticmethod
+    def shuffle_order_with_blocks() -> list:
+        new_order = []
+        sub_order = np.arange(0, 3)
+        sub_order = np.random.permutation(sub_order)
+        for i in sub_order:
+            sub_arr = np.arange(0, 3)
+            new_order += list(sub_arr + i * 3)
+        
+        return new_order
 
     def rotate_grid(self) -> None:
         self.sudoku.grid = np.rot90(self.sudoku.grid)
@@ -46,13 +67,18 @@ class SudokuScrambler:
             self.swap_all_digits(d1, d2)
 
         # shuffling rows
-        new_order = np.arange(0, 9)
-        new_order = np.random.permutation(new_order)
-        self.shuffle_rows(new_order)
+        new_order = self.shuffle_order_within_squares()
+        self.permutate_rows(new_order)
 
         # shuffling cols
-        new_order = np.random.permutation(new_order)
-        self.shuffle_cols(new_order)
+        new_order = self.shuffle_order_within_squares()
+        self.permutate_cols(new_order)
+
+        # shuffling blocks
+        new_order = self.shuffle_order_with_blocks()
+        self.permutate_rows(new_order)
+        new_order = self.shuffle_order_with_blocks()
+        self.permutate_cols(new_order)
 
         # rotating
         random_rotation = np.random.randint(0, 4)
@@ -63,7 +89,7 @@ class SudokuScrambler:
         # random_reflection = np.random.randint()
             
         # removing digits
-        all_indexes = np.arange(0, 82)
+        all_indexes = np.arange(0, 82 - 17)
         shuffled_indexes = np.random.permutation(all_indexes)
         number_of_digits_to_be_removed = np.random.randint(0, 82)
         digits_to_be_removed = shuffled_indexes[:number_of_digits_to_be_removed]

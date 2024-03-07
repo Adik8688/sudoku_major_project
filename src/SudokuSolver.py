@@ -8,6 +8,7 @@ class SudokuSolver:
         self.sudoku = sudoku
         self.grid_of_candidates = []
         self.create_grid_of_candidates()
+        self.number_of_steps = 0
 
     def get_list_of_candidates_for_cell(self, x: int, y: int) -> list:
         if self.sudoku.get_cell(x, y) != 0:
@@ -144,15 +145,20 @@ class SudokuSolver:
         self.grid_of_candidates = []
         self.create_grid_of_candidates()
 
+        steps = deepcopy(self.number_of_steps)
+
         another_solution = self.solve_recursive(ignore_solution=solution)
         if another_solution is not None:
             return None
         
+        self.number_of_steps = steps
+
         return solution
 
 
     
     def solve_recursive(self, n: int = 0, ignore_solution: Sudoku = None) -> Sudoku:
+        self.number_of_steps += 1
         if ignore_solution is not None and np.array_equal(self.sudoku.grid, ignore_solution.grid):
             return None
         
@@ -166,14 +172,12 @@ class SudokuSolver:
         x, y, values = self.get_lowest_candidates_number()
 
         for value in values:
-            print(f"({x}, {y}) n: {n}, val: {value}")
             self.sudoku.set_cell(x, y, value)
             self.update_grid_of_candidates(x, y)
             result = self.solve_recursive(n = n + 1, ignore_solution=ignore_solution)
             if result is not None:
                 return self.sudoku
         
-        print(f"Return None on n: {n}")
         self.sudoku.clean_cell(x, y)
         self.update_grid_of_candidates(x, y)
 

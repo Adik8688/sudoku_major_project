@@ -117,6 +117,26 @@ def test_solve_3():
     
     assert result is None
 
+def test_solve_4():
+    grid = [
+        [4, 7, 9, 3, 1, 2, 6, 5, 8],
+        [7, 2, 6, 8, 4, 9, 5, 1, 3],
+        [5, 9, 1, 7, 6, 8, 3, 4, 2],
+        [1, 3, 7, 2, 5, 4, 8, 9, 6],
+        [6, 1, 2, 4, 8, 5, 9, 3, 7],
+        [8, 6, 4, 5, 3, 1, 7, 2, 9],
+        [3, 8, 5, 9, 2, 6, 4, 7, 1],
+        [9, 4, 8, 1, 7, 3, 2, 6, 5],
+        [2, 5, 3, 6, 9, 7, 1, 8, 4]
+    ]
+
+    sudoku = Sudoku(grid)
+    solver = SudokuSolver(sudoku)
+
+    result = solver.solve()
+
+    assert result is not None
+
 def test_get_coords(example_sudoku_1):
     solver = SudokuSolver(example_sudoku_1)
 
