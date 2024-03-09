@@ -52,3 +52,8 @@ class SudokuAnalyzer:
 
         return (sum_of_candidates, number_of_initial_values, initial_numbers_entropy)
     
+    def __str__(self) -> str:
+        properties = self.get_sudoku_description()
+        
+        return f"Sum of candidates: {properties[0]}\nNumber of initial values: {properties[1]}\nInitial values' entropy: {properties[2]}"
+    
