@@ -19,19 +19,24 @@ SEED = [
         [3, 4, 5, 2, 8, 6, 1, 7, 9],
     ]
 
-def run_simulation():
-    sudoku = Sudoku(SEED)
-    scrambler = SudokuScrambler(sudoku)
-    scrambler.scramble()
-    analyzer = SudokuAnalyzer(sudoku)
-    sudoku_properties = analyzer.get_sudoku_description()
+def run_simulation(batch_size):
+    results = []
+    for _ in range(batch_size):
+        sudoku = Sudoku(SEED)
+        scrambler = SudokuScrambler(sudoku)
+        scrambler.scramble()
+        analyzer = SudokuAnalyzer(sudoku)
+        sudoku_properties = analyzer.get_sudoku_description()
 
-    solver = SudokuSolver(sudoku)
-    solved_sudoku = solver.solve()
-    if solved_sudoku is None:
-        return ""
-    
-    return f"{sudoku_properties[0]};{sudoku_properties[1]};{sudoku_properties[2]};{solver.number_of_steps}\n"
+        solver = SudokuSolver(sudoku)
+        solved_sudoku = solver.solve()
+        if solved_sudoku is None:
+            results.append("")
+            continue
+
+        results.append(f"{sudoku_properties[0]};{sudoku_properties[1]};{sudoku_properties[2]};{solver.number_of_steps}\n")
+        
+    return results
 
 def write_output(results, output_path):
     with open(output_path, 'a') as f:
@@ -46,15 +51,17 @@ def main():
 
     n = int(sys.argv[1])
     output_path = sys.argv[2]
+    num_of_workers = 8
+    batch_size = n // num_of_workers
 
     start_time = time.time()
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        futures = [executor.submit(run_simulation) for _ in range(n)]
+    with concurrent.futures.ProcessPoolExecutor(max_workers=num_of_workers) as executor:
+        futures = [executor.submit(run_simulation, batch_size) for _ in range(num_of_workers)]
 
         results = []
         for future in concurrent.futures.as_completed(futures):
-            results.append(future.result())
+            results.extend(future.result())
 
     end_time = time.time()
 

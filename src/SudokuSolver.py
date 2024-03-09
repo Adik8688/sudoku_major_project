@@ -25,7 +25,7 @@ class SudokuSolver:
         return valid_values
 
 
-    def create_grid_of_candidates(self) -> list:
+    def create_grid_of_candidates(self):
         for y in range(9):
             row = []
             for x in range(9):
