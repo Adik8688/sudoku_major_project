@@ -89,10 +89,9 @@ class SudokuScrambler:
         # random_reflection = np.random.randint()
             
         # removing digits
-        all_indexes = np.arange(0, 82 - 17)
-        shuffled_indexes = np.random.permutation(all_indexes)
-        number_of_digits_to_be_removed = np.random.randint(0, 82)
-        digits_to_be_removed = shuffled_indexes[:number_of_digits_to_be_removed]
+        numbers_to_be_removed = np.arange(82)
+        lenght = np.random.randint(0, 65)
+        digits_to_be_removed = np.random.choice(numbers_to_be_removed, size=lenght, replace=False)
         for d in digits_to_be_removed:
             self.remove_digit(d)
         
