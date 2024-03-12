@@ -80,9 +80,15 @@ class Sudoku:
         return self.grid[y : y + 3, x : x + 3]
 
     def __str__(self) -> str:
+        COLOR = '\033[91m'
+        ENDC = '\033[0m'
         output = ""
-        for row in self.grid:
-            output += " ".join([(str(i) if i != 0 else "-") for i in row])
+        for y in range(9):
+            for x in range(9):
+                if self.grid[y, x] != 0 and self.grid[y, x] == self.initial_grid[y, x]:
+                    output += f"{COLOR}{self.grid[y, x]}{ENDC} "
+                else:
+                    output += f"{self.grid[y, x]} "
             output += "\n"
 
         return output
