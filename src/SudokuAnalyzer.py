@@ -33,14 +33,14 @@ class SudokuAnalyzer:
 
         return distribution
 
-    @staticmethod
-    def convert_distribution_to_entropy(distribution: dict) -> int:
+    def convert_distribution_to_entropy(self, distribution: dict) -> int:
         total = sum(distribution.values())
 
         entropy = 0
         for v in distribution.values():
             entropy -= (v/total) * np.log2(v/total)
 
+        entropy *= (self.get_number_of_non_empty_cells() / 81)
         return round(entropy, 2)
     
     def get_sudoku_description(self) -> tuple:
