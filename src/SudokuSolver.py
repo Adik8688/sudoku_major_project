@@ -2,13 +2,19 @@ from .Sudoku import Sudoku
 from collections import defaultdict
 from copy import deepcopy
 import numpy as np
+import time
 
 class SudokuSolver:
-    def __init__(self, sudoku: Sudoku) -> None:
+    def __init__(self, sudoku: Sudoku, debug_file="") -> None:
         self.sudoku = sudoku
         self.grid_of_candidates = []
         self.create_grid_of_candidates()
         self.number_of_steps = 0
+        self.debug_file = debug_file
+
+        with open(debug_file, 'a') as f:
+            f.write(sudoku.__str__())
+            f.write("\n")
 
     def get_list_of_candidates_for_cell(self, x: int, y: int) -> list:
         if self.sudoku.get_cell(x, y) != 0:
@@ -137,6 +143,10 @@ class SudokuSolver:
                 break
     
     def solve(self) -> Sudoku:
+        
+        start_time = time.time()
+
+
         solution = self.solve_recursive()
         if solution is None:
             return None
@@ -152,6 +162,11 @@ class SudokuSolver:
             return None
         
         self.number_of_steps = steps
+
+        end_time = time.time()
+
+        with open(self.debug_file, 'a') as f:
+            f.write(f"Solving time: {end_time - start_time}\n")
 
         return solution
 
@@ -172,6 +187,8 @@ class SudokuSolver:
         x, y, values = self.get_lowest_candidates_number()
 
         for value in values:
+            with open(self.debug_file, 'a') as f:
+                f.write(f"x:{x} y:{y} value:{value} n:{n}\n\n\n")
             self.sudoku.set_cell(x, y, value)
             self.update_grid_of_candidates(x, y)
             result = self.solve_recursive(n = n + 1, ignore_solution=ignore_solution)

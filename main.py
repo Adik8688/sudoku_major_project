@@ -28,7 +28,10 @@ def run_experiment(batch_size, batch_number):
         analyzer = SudokuAnalyzer(sudoku)
         sudoku_properties = analyzer.get_sudoku_description()
 
-        solver = SudokuSolver(sudoku)
+        debug_file = f"batch_{batch_number}.txt"
+        with open(debug_file, "w") as f:
+            f.write("")
+        solver = SudokuSolver(sudoku, debug_file)
         solved_sudoku = solver.solve()
         if solved_sudoku is None:
             results.append("")
@@ -77,7 +80,7 @@ def main():
 
     number_of_experiments = int(sys.argv[1])
     output_path = sys.argv[2]
-    num_of_workers = 16
+    num_of_workers = 32
     batch_size = number_of_experiments // num_of_workers
     start_time = time.time()
     print_time(start_time, "Started: ")
