@@ -5,7 +5,7 @@ import numpy as np
 import time
 
 class SudokuSolver:
-    def __init__(self, sudoku: Sudoku, debug_file="") -> None:
+    def __init__(self, sudoku: Sudoku, debug_file="default_debug.txt") -> None:
         self.sudoku = sudoku
         self.grid_of_candidates = []
         self.create_grid_of_candidates()
@@ -166,7 +166,7 @@ class SudokuSolver:
         end_time = time.time()
 
         with open(self.debug_file, 'a') as f:
-            f.write(f"Solving time: {end_time - start_time}\n")
+            f.write(f"Solving time: {end_time - start_time}")
 
         return solution
 
@@ -188,7 +188,7 @@ class SudokuSolver:
 
         for value in values:
             with open(self.debug_file, 'a') as f:
-                f.write(f"x:{x} y:{y} value:{value} n:{n}\n\n\n")
+                f.write(f"x:{x} y:{y} value:{value} n:{n}\n")
             self.sudoku.set_cell(x, y, value)
             self.update_grid_of_candidates(x, y)
             result = self.solve_recursive(n = n + 1, ignore_solution=ignore_solution)

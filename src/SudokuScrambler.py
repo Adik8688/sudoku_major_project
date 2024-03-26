@@ -3,9 +3,10 @@ import numpy as np
 from copy import deepcopy
 
 class SudokuScrambler:
-    def __init__(self, sudoku: Sudoku) -> None:
+    def __init__(self, sudoku: Sudoku, number_of_initial_values = 0) -> None:
         self.sudoku = sudoku
         self.sudoku.initial_grid = np.zeros([9, 9])
+        self.number_of_initial_values = number_of_initial_values
 
     
     def swap_all_digits(self, digit1: int, digit2: int) -> None:
@@ -90,7 +91,10 @@ class SudokuScrambler:
             
         # removing digits
         numbers_to_be_removed = np.arange(82)
-        lenght = np.random.randint(0, 65)
+        if self.number_of_initial_values != 0:
+            lenght = 81 - self.number_of_initial_values
+        else:
+            lenght = np.random.randint(0, 65)
         digits_to_be_removed = np.random.choice(numbers_to_be_removed, size=lenght, replace=False)
         for d in digits_to_be_removed:
             self.remove_digit(d)
