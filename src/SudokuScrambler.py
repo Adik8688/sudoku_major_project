@@ -1,12 +1,15 @@
 from .Sudoku import Sudoku
+from .SudokuAnalyzer import SudokuAnalyzer
 import numpy as np
 from copy import deepcopy
+from joblib import load
 
 class SudokuScrambler:
     def __init__(self, sudoku: Sudoku, number_of_initial_values = 0) -> None:
         self.sudoku = sudoku
         self.sudoku.initial_grid = np.zeros([9, 9])
         self.number_of_initial_values = number_of_initial_values
+        self.model = load("sudoku_model.joblib")
 
     
     def swap_all_digits(self, digit1: int, digit2: int) -> None:
@@ -58,6 +61,9 @@ class SudokuScrambler:
 
     def update_initial_grid(self) -> None:
         self.sudoku.initial_grid = deepcopy(self.sudoku.grid)
+
+    def get_predicted_number_of_steps():
+        pass
 
     def scramble(self) -> None:
         # swapping digits

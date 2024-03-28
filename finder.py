@@ -1,18 +1,19 @@
 import concurrent.futures
+import sys
 
-value_to_find = "184;29;2.98;211"
-value_to_find = "184;29;2.98;211\n"
-
+"162;31;3.07;51"
 
 def search(batch, value):
-    with open(f"batch_{batch}.txt", "r") as f:
+    with open(f"logs/batch_{batch}.txt", "r") as f:
+
         for line in f:
-            if line.endswith(value):
+            if value in line:
                 print(batch)
                 return batch
     return None
 
 def main():
+    value_to_find = sys.argv[1]
     with concurrent.futures.ProcessPoolExecutor(max_workers=32) as executor:
         futures = [executor.submit(search, batch, value_to_find) for batch in range(32)]
         results = []

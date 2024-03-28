@@ -22,7 +22,7 @@ SEED = [
 
 def run_experiment(batch_size, batch_number, number_of_initial_values):
     results = []
-    debug_file = f"batch_{batch_number}.txt"
+    debug_file = f"logs/batch_{batch_number}.txt"
     with open(debug_file, "a") as f:
         f.write("")
         
@@ -98,21 +98,27 @@ def main():
         number_of_initial_values = int(sys.argv[3])
     num_of_workers = 32
     timeout = number_of_experiments
-    timeout = timeout * 0.02 if len(sys.argv) == 4 else timeout * 0.01
+    timeout = timeout * 0.03 if len(sys.argv) == 4 else timeout * 0.015
     batch_size = number_of_experiments // num_of_workers
     start_time = time.time()
     print_time(start_time, "Started: ")
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=num_of_workers) as executor:
         futures = [executor.submit(run_experiment, batch_size, n, number_of_initial_values) for n in range(num_of_workers)]
-
+        timeouts = {}
         results = []
-        for future in concurrent.futures.as_completed(futures, timeout=timeout):
-            try:
-                results.extend(future.result())
-            except TimeoutError:
-                print_duration(timeout, "Timeout has been exceeded ")
-                future.cancel()
+        try:
+            for future in concurrent.futures.as_completed(futures, timeout=timeout):
+                try:
+                    results.extend(future.result())
+                except TimeoutError:
+                    print_duration(timeout, "Timeout has been exceeded ")
+                    timeouts[future] = True
+        except TimeoutError:
+            print("Overall timeout has been exceeded")
+
+        for future in timeouts:
+            future.cancel()
 
     end_time = time.time()
     print_duration(end_time - start_time, "Execution time: ")
