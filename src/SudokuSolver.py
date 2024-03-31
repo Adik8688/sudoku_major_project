@@ -7,7 +7,6 @@ import time
 class SudokuSolver:
     def __init__(self, sudoku: Sudoku, debug_file="default_debug.txt") -> None:
         self.sudoku = sudoku
-        self.grid_of_candidates = []
         self.create_grid_of_candidates()
         self.number_of_steps = 0
         self.debug_file = debug_file
@@ -32,6 +31,7 @@ class SudokuSolver:
 
 
     def create_grid_of_candidates(self):
+        self.grid_of_candidates = []
         for y in range(9):
             row = []
             for x in range(9):
@@ -146,7 +146,6 @@ class SudokuSolver:
         
         start_time = time.time()
 
-
         solution = self.solve_recursive()
         if solution is None:
             return None
@@ -160,7 +159,7 @@ class SudokuSolver:
         another_solution = self.solve_recursive(ignore_solution=solution)
         if another_solution is not None:
             return None
-        
+
         self.number_of_steps = steps
 
         end_time = time.time()
@@ -190,7 +189,7 @@ class SudokuSolver:
             with open(self.debug_file, 'a') as f:
                 f.write(f"x:{x} y:{y} value:{value} n:{n}\n")
             self.sudoku.set_cell(x, y, value)
-            self.update_grid_of_candidates(x, y)
+            self.create_grid_of_candidates()
             result = self.solve_recursive(n = n + 1, ignore_solution=ignore_solution)
             if result is not None:
                 return self.sudoku

@@ -43,7 +43,7 @@ class Sudoku:
         if (
             self.valid_coords(x, y)
             and self.valid_value(new_value)
-            and self.initial_grid[y, x] == 0
+            and self.initial_grid[y, x] == 0 
         ):
             self.grid[y, x] = new_value
 
@@ -78,6 +78,14 @@ class Sudoku:
         x = (index % 3) * 3
         y = (index // 3) * 3
         return self.grid[y : y + 3, x : x + 3]
+
+    def get_hash(self) -> str:
+        output = ""
+        for row in self.grid:
+            for i in row:
+                output += str(i)
+        
+        return output
 
     def __str__(self) -> str:
         output = ""
