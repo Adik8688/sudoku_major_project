@@ -6,6 +6,7 @@ from src.SudokuAnalyzer import SudokuAnalyzer
 from src.SudokuSolver import SudokuSolver
 import concurrent.futures
 import time
+import glob
 
 
 SEED = [
@@ -51,7 +52,7 @@ def run_experiment(batch_size, batch_number, number_of_initial_values):
 
 def write_output(results, output_path):
     if not os.path.isfile(output_path):
-        results = ["sudoku;sum_of_candidates;number_of_initial_values;initial_numbers_entropy;numbers_of_steps_to_solve\n"] + results
+        results = ["sudoku;sum_of_candidates;number_of_initial_values;initial_numbers_entropy;number_of_steps_to_solve\n"] + results
         
     with open(output_path, 'a') as f:
         for r in results:
@@ -176,17 +177,22 @@ def split_list_into_n_chunks(lst, n):
     return chunks
 
 def from_file_mode():
-    input_file = sys.argv[2]
+    input_path = sys.argv[2]
     output_file = sys.argv[3]
     num_of_workers = 32
 
+    file_paths = glob.glob(input_path)
+    all_grids = []
 
-    with open(input_file) as f:
-        hashes = [line.strip() for line in f]
-        grids = [hash_to_grid(h) for h in hashes]
+    for input_file in file_paths:
+        with open(input_file) as f:
+            hashes = [line.strip() for line in f]
+            grids = [hash_to_grid(h) for h in hashes]
+            all_grids.extend(grids)
     
-    splitted_grids = split_list_into_n_chunks(grids, num_of_workers)
-    no_grids = len(grids)
+    
+    splitted_grids = split_list_into_n_chunks(all_grids, num_of_workers)
+    no_grids = len(all_grids)
     timeout = no_grids * 0.03
 
     print(f"Number of grids to be solved {no_grids}")
