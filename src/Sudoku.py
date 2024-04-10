@@ -3,13 +3,14 @@ import numpy as np
 
 
 class Sudoku:
-    def __init__(self, grid: list) -> None:
+    def __init__(self, grid: list = ("0" * 9 + "\n") * 9) -> None:
         if isinstance(grid, str):
             grid = self.string_to_grid(grid)
 
         self.initial_grid = copy.deepcopy(np.array(grid))
         self.grid = np.array(grid, dtype=int)
         self.grid_validation()
+
 
     def grid_validation(self) -> None:
         if self.grid.shape != (9, 9):
@@ -18,9 +19,17 @@ class Sudoku:
     def reset_sudoku(self) -> None:
         self.grid = copy.deepcopy(self.initial_grid)
 
+
     @staticmethod
     def string_to_grid(grid: str) -> list:
         output = []
+
+        if len(grid.strip().split()) != 9:
+            grid_fixed = ""
+            for i in range(0, 81, 9):
+                grid_fixed += grid[i : i + 9] + "\n"
+            grid = grid_fixed
+
         for row in grid.strip().split():
             new_row = [int(i) for i in list(row)]
             output.append(new_row)

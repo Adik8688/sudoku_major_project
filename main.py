@@ -7,6 +7,7 @@ from src.SudokuSolver import SudokuSolver
 import concurrent.futures
 import time
 import glob
+from src.Game import Game
 
 
 SEED = [
@@ -228,7 +229,19 @@ def main():
 
     elif sys.argv[1] == "-f":
         from_file_mode()
-
+    
+    elif sys.argv[1] == "-g":
+        grid = """000801000
+            000000043
+            500000000
+            000070800
+            000000100
+            020030000
+            600000075
+            003400000
+            000200600""" 
+        myGame = Game(grid)
+        myGame.run()
     
 
 if __name__ == "__main__":
