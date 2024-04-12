@@ -136,3 +136,80 @@ def test_get_square(example_sudoku_1):
               [9, 7, 0]]
     result = example_sudoku_1.get_square(4)
     assert np.array_equal(square, result)
+
+def test_reset_sudoku(example_sudoku_1):
+    # Attempt to change a modifiable cell and verify change
+    original_value = example_sudoku_1.get_cell(2, 0)  # Should be initially 0
+    example_sudoku_1.set_cell(2, 0, 5)  # Change an initially empty cell
+    assert example_sudoku_1.get_cell(2, 0) == 5
+
+    # Reset and verify it returns to initial state
+    example_sudoku_1.reset_sudoku()
+    assert example_sudoku_1.get_cell(2, 0) == 0
+
+
+def test_clean_cell(example_sudoku_1):
+    # Set a cell, then clean it, and check if it has been reset to 0
+    example_sudoku_1.set_cell(2, 0, 5)
+    example_sudoku_1.clean_cell(2, 0)
+    assert example_sudoku_1.get_cell(2, 0) == 0
+
+
+def test_check_rows(solved_sudoku):
+    # Check rows on a correctly solved grid
+    assert solved_sudoku.check_rows()
+
+    # Manipulate a row to be incorrect
+    solved_sudoku.grid[0][0] = 9  # Change value which disrupts uniqueness
+    assert not solved_sudoku.check_rows()
+
+
+def test_check_cols(solved_sudoku):
+    # Check columns on a correctly solved grid
+    assert solved_sudoku.check_cols()
+
+    # Manipulate a column to be incorrect
+    solved_sudoku.grid[0][0] = solved_sudoku.grid[1][0]
+    assert not solved_sudoku.check_cols()
+
+
+def test_check_squares(solved_sudoku):
+    # Check squares on a correctly solved grid
+    assert solved_sudoku.check_squares()
+
+    # Manipulate a square to be incorrect
+    solved_sudoku.grid[1][1] = solved_sudoku.grid[2][2]  # Duplicates within a square
+    assert not solved_sudoku.check_squares()
+
+
+def test_string_to_grid():
+    input_str = "123456789" * 9
+    sudoku = Sudoku(input_str)
+    expected_grid = np.array([[1, 2, 3, 4, 5, 6, 7, 8, 9] for _ in range(9)])
+    assert np.array_equal(sudoku.grid, expected_grid)
+
+
+@pytest.mark.xfail(reason="Program exits on invalid grid shape")
+def test_invalid_grid_shape():
+    grid = np.zeros((10, 10))  # Invalid shape
+    sudoku = Sudoku(grid)
+
+
+def test_valid_coords():
+    # Check within bounds
+    assert Sudoku.valid_coords(0, 0)
+    assert Sudoku.valid_coords(8, 8)
+
+    # Check out of bounds
+    assert not Sudoku.valid_coords(-1, 0)
+    assert not Sudoku.valid_coords(0, 9)
+
+
+def test_valid_value():
+    # Valid value range
+    assert Sudoku.valid_value(0)
+    assert Sudoku.valid_value(9)
+
+    # Invalid value
+    assert not Sudoku.valid_value(10)
+    assert not Sudoku.valid_value(-1)

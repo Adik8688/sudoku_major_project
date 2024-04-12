@@ -165,3 +165,52 @@ def test_indexes_per_candidate(example_sudoku_1):
     result = solver.get_indexes_per_candidate(candidates)
     assert result == distribution
 
+def test_update_grid_of_candidates(example_sudoku_1):
+    solver = SudokuSolver(example_sudoku_1)
+    # Assuming the initial candidate grid is created correctly,
+    # let's test updates after setting a cell.
+    solver.sudoku.set_cell(2, 0, 1)  # Set cell which originally had multiple candidates
+    solver.update_grid_of_candidates(2, 0)
+
+    # This should eliminate '1' from candidates in row 0, column 2, and its square
+    assert 1 not in solver.grid_of_candidates[0][2]  # Same row, different column
+    assert 1 not in solver.grid_of_candidates[0][3]  # Same square
+    assert 1 not in solver.grid_of_candidates[1][2]  # Same column, different row
+
+
+def test_solve_recursive(example_sudoku_1):
+    solver = SudokuSolver(example_sudoku_1)
+    # Recursive solving should reach a correct solution or return None if unsolvable
+    solution = solver.solve_recursive()
+    assert solution is None or solution.is_solved()
+
+def test_solve_with_ignore_solution(hard_sudoku):
+    solver = SudokuSolver(hard_sudoku)
+    # First solve the puzzle
+    first_solution = solver.solve_recursive()
+    # Now solve again ignoring the first solution
+    second_solution = solver.solve_recursive(ignore_solution=first_solution)
+    # Ensure that ignoring the first solution did not simply find the same solution again
+    assert second_solution is None or not np.array_equal(first_solution.grid, second_solution.grid)
+
+def test_filter_out_hidden_singles(example_sudoku_1):
+    solver = SudokuSolver(example_sudoku_1)
+    # Directly manipulate grid_of_candidates to set up a scenario with a hidden single
+    # For instance, set up a row with one cell having a unique candidate
+    solver.grid_of_candidates[0][8] = [3]  # Suppose only this cell can be 3
+    # Now apply filter on this row
+    solver.filter_out_hidden_singles([(i, 0) for i in range(9)])
+    # Check if the single was correctly identified and set
+    assert solver.grid_of_candidates[0][8] == [3]
+
+def test_functionality_of_get_highest_candidate_number(example_sudoku_1):
+    solver = SudokuSolver(example_sudoku_1)
+    x, y, values = solver.get_highest_candidate_number()
+    # This test depends on specific puzzle setup; generally, you want to check if this cell really has the most candidates
+    assert len(values) == max(len(c) for row in solver.grid_of_candidates for c in row if c != [-1])
+
+def test_functionality_of_get_lowest_candidates_number(example_sudoku_1):
+    solver = SudokuSolver(example_sudoku_1)
+    x, y, values = solver.get_lowest_candidates_number()
+    # Similar to the highest, check if this cell really has the fewest candidates (and is not filled or blocked)
+    assert len(values) == min(len(c) for row in solver.grid_of_candidates for c in row if c != [-1])

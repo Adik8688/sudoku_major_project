@@ -1,5 +1,3 @@
-import os
-
 class SudokuDB:
     def __init__(self) -> None:
         self.filepath = 'sudoku_db.csv'
