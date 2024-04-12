@@ -1,8 +1,8 @@
 import pygame
-from .Cell import Cell
-from .Mark import Mark
-from .Button import Button
-from .Slider import Slider
+from .components.Cell import Cell
+from .components.Mark import Mark
+from .components.Button import Button
+from .components.Slider import Slider
 
 from .Sudoku import Sudoku
 from .SudokuSolver import SudokuSolver
