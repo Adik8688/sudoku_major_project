@@ -32,7 +32,7 @@ def main():
 
     # normalize to scale 1-10
     df_valid["difficulty_level"] = 1 + ((df_valid["difficulty_level"] - min_value) * 9 / (max_value - min_value))
-    df_valid["difficulty_level"] = round(df_valid["difficulty_level"], 2)
+    df_valid["difficulty_level"] = round(df_valid["difficulty_level"], 4)
 
     # save to the file
     df_valid = df_valid.sort_values('difficulty_level')

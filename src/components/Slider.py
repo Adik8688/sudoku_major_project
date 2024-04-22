@@ -52,5 +52,5 @@ class Slider:
         # Update the current value based on the range and the percentage
         value_range = self.end_range - self.start_range
         self.current_value = self.start_range + percentage * value_range
-        self.current_value = round(self.current_value, 2)
+        self.current_value = round(self.current_value, 3)
         # You might want to round the value or format it if needed

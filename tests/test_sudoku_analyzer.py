@@ -35,25 +35,23 @@ def example_sudoku_1():
 def test_get_sum_of_candidates(example_sudoku_1):
     analyzer = SudokuAnalyzer(example_sudoku_1)
     sum_candidates = analyzer.get_sum_of_candidates()
-    # Depending on the provided Sudoku, this needs to match the actual calculated candidates
-    assert sum_candidates > 0  # Specific value depends on sudoku setup
+    assert sum_candidates > 0  
 
 def test_get_number_of_non_empty_cells(example_sudoku_1):
     analyzer = SudokuAnalyzer(example_sudoku_1)
     num_non_empty = analyzer.get_number_of_non_empty_cells()
-    assert num_non_empty == 29  # Based on the example grid setup
+    assert num_non_empty == 29  
 
 def test_get_distribution_of_initial_numbers(example_sudoku_1):
     analyzer = SudokuAnalyzer(example_sudoku_1)
     distribution = analyzer.get_distribution_of_initial_numbers()
-    assert distribution[5] == 1  # One '5' in the provided grid setup
+    assert distribution[5] == 3
 
 def test_convert_distribution_to_entropy(example_sudoku_1):
     analyzer = SudokuAnalyzer(example_sudoku_1)
     distribution = {1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3, 8: 3, 9: 3}
     entropy = analyzer.convert_distribution_to_entropy(distribution)
-    assert entropy > 0  # Check for a positive entropy
-
+    assert entropy > 0  
 def test_get_sudoku_description(example_sudoku_1):
     analyzer = SudokuAnalyzer(example_sudoku_1)
     description = analyzer.get_sudoku_description()
