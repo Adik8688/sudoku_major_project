@@ -25,8 +25,8 @@ SOLVING_TIME = 10
 
 
 class Game:
-    def __init__(self, grid):
-        self.sudoku = Sudoku(grid)
+    def __init__(self):
+        self.sudoku = Sudoku()
 
         pygame.init()
         self.window = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))

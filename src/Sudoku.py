@@ -60,17 +60,25 @@ class Sudoku:
         self.set_cell(x, y, 0)
 
     def check_rows(self) -> bool:
-        row_correct = np.all(np.sort(self.grid, axis=1) == np.arange(1, 10), axis=1)
-        return np.all(row_correct)
+        for row in self.grid:
+            s_row = set(row)
+            if len(s_row) != 9 or 0 in s_row:
+                return False
+            return True
 
     def check_cols(self) -> bool:
-        col_correct = np.all(np.sort(self.grid, axis = 0) == np.arange(1, 10)[:, None], axis=0)
-        return np.all(col_correct)
+        transposed_grid = self.grid.T
+        for col in transposed_grid:
+            s_col = set(col)
+            if len(s_col) != 9 or 0 in s_col:
+                return False
+            return True
 
     def check_squares(self) -> bool:
         for i in range(9):
             square = self.get_square(i)
-            if not np.all(np.sort(square.flatten()) == np.arange(1, 10)):
+            s_square = set(square.flatten())
+            if len(s_square) != 9 or 0 in square:
                 return False
         return True
 

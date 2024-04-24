@@ -62,8 +62,6 @@ class SudokuScrambler:
     def update_initial_grid(self) -> None:
         self.sudoku.initial_grid = deepcopy(self.sudoku.grid)
 
-    def get_predicted_number_of_steps():
-        pass
 
     def scramble(self) -> None:
         # swapping digits

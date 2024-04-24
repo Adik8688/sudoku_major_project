@@ -34,21 +34,6 @@ class SudokuSolver:
                 row.append(self.get_list_of_candidates_for_cell(x, y))
             self.grid_of_candidates.append(row)
 
-    def update_grid_of_candidates(self, x: int, y: int) -> list:
-        # cols and rows
-        for i in range(9):
-            self.grid_of_candidates[y][i] = self.get_list_of_candidates_for_cell(i, y)
-            self.grid_of_candidates[i][x] = self.get_list_of_candidates_for_cell(x, i)
-
-        # squares
-        sqx = x // 3
-        sqy = y // 3
-        for i in range(3):
-            for j in range(3):
-                x_coord = sqx * 3 + i
-                y_coord = sqy * 3 + j
-                self.grid_of_candidates[y_coord][x_coord] = self.get_list_of_candidates_for_cell(x_coord, y_coord)
-        
     
     def is_solvable(self) -> bool:
         for row in self.grid_of_candidates:
@@ -190,8 +175,8 @@ class SudokuSolver:
             with open(self.output_file, 'a') as f:
                 f.write(f"{x} {y} 0\n")
         self.sudoku.clean_cell(x, y)
-        self.update_grid_of_candidates(x, y)
-
+        self.create_grid_of_candidates()
+ 
         return None
     
   

@@ -36,13 +36,4 @@ class Cell:
                 if self.y != y and self.x != x and cells[y][x].value == self.value:
                     return True
 
-
-        # for row in cells:
-        #     for cell in row:
-        #         if cell.x == self.x and cell.y == self.y:
-        #             continue
-
-        #         if cell.value == self.value and self.value != 0:
-        #             if cell.x == self.x or cell.y == self.y or cell.square_id == self.square_id:
-        #                 return True
         return False
