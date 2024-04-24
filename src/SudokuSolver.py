@@ -33,7 +33,6 @@ class SudokuSolver:
             for x in range(9):
                 row.append(self.get_list_of_candidates_for_cell(x, y))
             self.grid_of_candidates.append(row)
-
     
     def is_solvable(self) -> bool:
         for row in self.grid_of_candidates:
@@ -176,7 +175,8 @@ class SudokuSolver:
                 f.write(f"{x} {y} 0\n")
         self.sudoku.clean_cell(x, y)
         self.create_grid_of_candidates()
- 
+
+
         return None
     
   
