@@ -163,7 +163,7 @@ class SudokuSolver:
         for value in values:
             if ignore_solution is None:
                 with open(self.output_file, 'a') as f:
-                    f.write(f"{x} {y} {value}\n")
+                    f.write(f"{x} {y} {value} {n}\n")
             self.sudoku.set_cell(x, y, value)
             self.create_grid_of_candidates()
             result = self.solve_recursive(n = n + 1, ignore_solution=ignore_solution)
@@ -172,7 +172,7 @@ class SudokuSolver:
             
         if ignore_solution is None:
             with open(self.output_file, 'a') as f:
-                f.write(f"{x} {y} 0\n")
+                f.write(f"{x} {y} 0 {n}\n")
         self.sudoku.clean_cell(x, y)
         self.create_grid_of_candidates()
 

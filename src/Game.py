@@ -70,7 +70,7 @@ class Game:
         difficulty_level = self.slider.current_value
 
         db = SudokuDB()
-        grid = db.get_sudoku_by_diff(difficulty_level)
+        grid = db.get_sudoku_by_diff_2(difficulty_level)
         self.sudoku = Sudoku(grid)
         self.cells = self.set_cells()
 
@@ -102,8 +102,6 @@ class Game:
             with open("output_solver.txt") as f:
                 self.solution = list(f.readlines())
 
-        print(f"{self.step} {len(self.solution)}")
-        
         if self.step >= len(self.solution):
             self.solving_animation = False
             self.step = 0
@@ -112,7 +110,7 @@ class Game:
 
 
         step = self.solution[self.step]
-        x, y, value = step.split()
+        x, y, value, n = step.split()
 
         self.mark.change_pos(int(x), int(y))
         self.put_number(int(value))

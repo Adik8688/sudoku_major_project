@@ -32,11 +32,14 @@ def main():
 
     # normalize to scale 1-10
     df_valid["difficulty_level"] = 1 + ((df_valid["difficulty_level"] - min_value) * 9 / (max_value - min_value))
-    df_valid["difficulty_level"] = round(df_valid["difficulty_level"], 4)
 
     # save to the file
     df_valid = df_valid.sort_values('difficulty_level')
-    df_valid.to_csv("sudoku_db.csv", sep=';', index=False)
+    df_valid["difficulty_level"] = df_valid["difficulty_level"].apply(
+        lambda x: f"{x:.3f}" if x >= 10 else f"{x:.4f}"
+    )
+
+    df_valid[['sudoku', 'difficulty_level']].to_csv("sudoku_db.csv", sep=';', index=False, header=False)
 
 if __name__ == "__main__":
     main()

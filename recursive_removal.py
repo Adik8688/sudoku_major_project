@@ -162,7 +162,7 @@ def main(sub_grids_limit, start_n, end_n):
             for future in concurrent.futures.as_completed(futures):
                 completed_futures += 1
                 remaining_futures = len(futures) - completed_futures
-                # print(f"{remaining_futures} tasks remaining")
+                print(f"{remaining_futures} tasks remaining")
 
         end_time = time.time()
         print(f"Execution time: {round(end_time - start_time, 2)}")

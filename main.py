@@ -7,7 +7,6 @@ from src.SudokuSolver import SudokuSolver
 import concurrent.futures
 import time
 import glob
-from src.Game import Game
 
 
 SEED = [
@@ -24,9 +23,6 @@ SEED = [
 
 def run_experiment(batch_size, batch_number, number_of_initial_values):
     results = []
-    debug_file = f"logs/batch_{batch_number}.txt"
-    with open(debug_file, "a") as f:
-        f.write("")
         
     for _ in range(batch_size):
         sudoku = Sudoku(SEED)
@@ -36,15 +32,11 @@ def run_experiment(batch_size, batch_number, number_of_initial_values):
         sudoku_properties = analyzer.get_sudoku_description()
 
         number_of_steps = -1
-        solver = SudokuSolver(sudoku, debug_file)
+        solver = SudokuSolver(sudoku)
         solved_sudoku = solver.solve()
         if solved_sudoku is not None:
             number_of_steps = solver.number_of_steps
-
         
-        
-        with open(debug_file, "a") as f:
-            f.write(f"{sudoku_properties[0]};{sudoku_properties[1]};{sudoku_properties[2]};{number_of_steps}\n\n\n")
 
         results.append(f"{sudoku.get_hash()};{sudoku_properties[0]};{sudoku_properties[1]};{sudoku_properties[2]};{number_of_steps}\n")
     
@@ -104,6 +96,7 @@ def random_mode(args):
     batch_size = number_of_experiments // num_of_workers
     start_time = time.time()
     print_time(start_time, "Started: ")
+
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=num_of_workers) as executor:
         futures = [executor.submit(run_experiment, batch_size, n, number_of_initial_values) for n in range(num_of_workers)]
@@ -199,6 +192,7 @@ def from_file_mode():
     print(f"Number of grids to be solved {no_grids}")
 
     start_time = time.time()
+    
     with concurrent.futures.ProcessPoolExecutor(max_workers=num_of_workers) as executor:
         futures = [executor.submit(solve_from_file, splitted_grids[n], n) for n in range(num_of_workers)]
         timeouts = {}
@@ -229,11 +223,7 @@ def main():
 
     elif sys.argv[1] == "-f":
         from_file_mode()
-    
-    elif sys.argv[1] == "-g":
-        myGame = Game()
-        myGame.run()
-    
+
 
 if __name__ == "__main__":
     main()

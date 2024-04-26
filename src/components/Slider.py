@@ -14,15 +14,12 @@ class Slider:
         self.end_range = end_range
         self.current_value = start_range
         self.font = pygame.font.SysFont("comicsans", 24)
-        self.dragging = False  # Is the user currently dragging the slider?
+        self.dragging = False  
 
     def draw(self, surface):
-        # Draw track
         pygame.draw.rect(surface, self.track_color, self.track_rect)
-        # Draw handle
         pygame.draw.rect(surface, self.handle_color, self.handle_rect)
-        # Draw value
-        value_surf = self.font.render(f"{self.current_value:.2f}", True, self.value_color)
+        value_surf = self.font.render(f"{self.current_value:.3f}", True, self.value_color)
         value_rect = value_surf.get_rect(center=(self.handle_rect.centerx, self.track_rect.bottom + 20))
         surface.blit(value_surf, value_rect)
 
@@ -38,19 +35,14 @@ class Slider:
                 self.move_handle(event.pos[0])
 
     def move_handle(self, mouse_x):
-        # Update the handle's position but keep it within the track's bounds
         new_x = max(self.track_rect.left, min(mouse_x - self.handle_rect.width // 2, self.track_rect.right - self.handle_rect.width))
         self.handle_rect.x = new_x
-        # Update the current value based on the handle's position
         self.update_value()
 
     def update_value(self):
-        # Calculate the percentage of the track that the handle has moved
         track_width = self.track_rect.width - self.handle_rect.width
         handle_pos = self.handle_rect.x - self.track_rect.x
         percentage = handle_pos / track_width
-        # Update the current value based on the range and the percentage
         value_range = self.end_range - self.start_range
         self.current_value = self.start_range + percentage * value_range
         self.current_value = round(self.current_value, 3)
-        # You might want to round the value or format it if needed

@@ -25,11 +25,8 @@ class Button:
         self.button_color = GRAY
 
     def draw(self, surface):
-        # Draw border
         pygame.draw.rect(surface, self.border_color, self.border_rect)
-        # Draw button
         pygame.draw.rect(surface, self.button_color, self.rect)
-        # Draw text
         surface.blit(self.text_surf, self.text_rect)
 
     def handle_click(self, x, y):
