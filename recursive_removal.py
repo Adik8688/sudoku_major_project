@@ -10,6 +10,27 @@ import time
 
 
 def remove_digits(grids: list, desired_deepnees: int, limit, outfile, existing_subgrids):
+    """
+    Recursively removes digits from a list of Sudoku grids to create new subgrid up to a desired depth.
+
+    Parameters
+    ----------
+    grids : list
+        A list of Sudoku grids in string format.
+    desired_deepnees : int
+        The number of digits to remove recursively.
+    limit : int
+        The maximum number of subgrids to generate.
+    outfile : str
+        File path to save the resulting subgrids.
+    existing_subgrids : str
+        File path containing existing subgrids to avoid duplication.
+
+    Returns
+    -------
+    list
+        A list of new grid configurations after digits are removed.
+    """
     results = []
     found_grids = 0
     valid_grids = set()
@@ -84,14 +105,15 @@ def remove_digits(grids: list, desired_deepnees: int, limit, outfile, existing_s
 
     return results
 
-def hash_to_grid(hash: str):
-    grid = ""
-    for i in range(0, 81, 9):
-        grid += hash[i : i + 9] + "\n"
-
-    return grid
-
 def remove_duplicated_lines_from_file(filename):
+    """
+    Removes duplicate lines from a file to ensure all entries are unique.
+
+    Parameters
+    ----------
+    filename : str
+        The path to the file from which duplicate lines are to be removed.
+    """
     with open(filename, "r+") as f:
         hashes = [line.strip() for line in f]
         hashes = set(hashes)
@@ -101,11 +123,42 @@ def remove_duplicated_lines_from_file(filename):
         f.truncate()
 
 def process_grid_part(grids, n, sub_grids_limit, part_number):
+    """
+    Processes a partition of grids to generate subgrids with fewer digits.
+
+    Parameters
+    ----------
+    grids : list
+        List of Sudoku grids.
+    n : int
+        Sequence number for file naming.
+    sub_grids_limit : int
+        Limit for subgrid generation.
+    part_number : int
+        Identifier for the part of grids being processed.
+    """
     remove_digits(grids, 1, sub_grids_limit, f"grids/subgrids/grids_{n}_{part_number}.txt", f"grids/grids_{n}.txt")
     remove_duplicated_lines_from_file(f"grids/subgrids/grids_{n}_{part_number}.txt")
 
 
 def append_and_delete_subgrids(file_path):
+    """
+    Appends all subgrid data from a directory into a main file and then deletes the subgrid files.
+
+    This function is used to merge results from multiple subgrid files into a single main grid file and clean up
+    the subgrid files afterwards to free up space.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the main grid file where subgrid data will be appended.
+
+    Overview
+    --------
+    The function first checks if the directory for subgrids exists. It reads all subgrid files within this directory,
+    appends their contents to the main grid file, and then deletes each subgrid file to clean up. It ensures that all
+    data is preserved in the main file and that no duplicates remain.
+    """
     file_path = os.path.abspath(file_path)
     
     file_dir = os.path.dirname(file_path)
@@ -135,14 +188,25 @@ def append_and_delete_subgrids(file_path):
 
 
 def main(sub_grids_limit, start_n, end_n):
+    """
+    Manages the entire process of generating, validating, and saving new Sudoku grid configurations.
+
+    Parameters
+    ----------
+    sub_grids_limit : int
+        The maximum number of subgrids to generate.
+    start_n : int
+        The starting index for processing.
+    end_n : int
+        The ending index for processing.
+    """
     num_of_workers = 32
   
     for i in range(start_n, end_n, -1):
         with open(f"grids/grids_{i}.txt") as f:
-            hashes = [line.strip() for line in f]
+            grids = [line.strip() for line in f]
 
 
-        grids = [hash_to_grid(h) for h in hashes]
         length = len(grids)
 
         print(f"{length} grids loaded from the file")

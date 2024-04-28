@@ -3,7 +3,12 @@
 !.gitignore
 !*.py
 !*.ipynb
+!*.txt
+!*.csv
+!*.joblib
 !README.md
 
 !*/
+
+recursive_grids_1.txt
 

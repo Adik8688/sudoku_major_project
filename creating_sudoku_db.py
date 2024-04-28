@@ -3,9 +3,27 @@ from joblib import load
 
 model = load('sudoku_model.joblib')
 def predict_difficulty(predictors):
+    """
+    Predicts the difficulty level of a Sudoku puzzle using a pre-trained machine learning model.
+
+    Parameters
+    ----------
+    predictors : list
+        A list containing the predictors needed by the model, typically including metrics like
+        the sum of candidates, the number of initial values, and the initial numbers' entropy.
+
+    Returns
+    -------
+    float
+        The predicted difficulty level of the Sudoku puzzle.
+    """
     return model.predict([predictors])[0]
 
 def main():
+    """
+    Main function to process and analyze Sudoku puzzles, assign difficulty levels, and save the results to a CSV file.
+    """
+     
     # merge csvs into one df
     files = ['analysis_random_v3.csv', 'recursively_generated_grids_1.csv']
     df_list = []

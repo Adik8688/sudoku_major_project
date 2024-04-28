@@ -162,7 +162,7 @@ def test_indexes_per_candidate(example_sudoku_1):
         8: [6],
         9: [3, 5, 6]
     }
-    result = solver.get_indexes_per_candidate(candidates)
+    result = solver.get_indexes_per_candidates(candidates)
     assert result == distribution
 
 def test_solve_recursive(example_sudoku_1):
