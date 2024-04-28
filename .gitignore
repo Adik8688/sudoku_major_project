@@ -3,6 +3,7 @@
 !.gitignore
 !*.py
 !*.ipynb
+!*.txt
 !*.joblib
 !README.md
 
